@@ -7,38 +7,45 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./css/style.css" />
     <title><%= title %></title>
+    <style>
+      body{
+        background: url("images/indexbac.jpg");
+        background-size: cover;
+        background-repeat: no-repeat;    
+      }
+    </style>
   </head>
-  <body class="bg-gray-50">
-    <nav>
-      <div
-        class="container flex flex-wrap items-center justify-between mx-auto"
-      >
-        <a href="/" class="py-2 px-4 flex items-center">
-          <span
-            class="self-center text-xl font-semibold whitespace-nowrap text-blue-800"
-            >Online Voting Platform</span
-          >
-        </a>
+  <body>
+    <nav class="p-9">
+      <div class="container flex flex-wrap items-center justify-center mx-auto ">
+          <span class="text-red-600 items-center text-4xl font-semibold whitespace-nowrap">ONLINE VOTING PLATFORM</span>
       </div>
-    </nav>
+    </nav> 
     <div>
-      <% if (messages && messages.error && messages.error.length > 0) { %>
-          <% for(var i=0; i<messages.error.length; i++) { %>
-              <p class="bg-blue-100 my-3 list-none rounded-md px-4 py-2"><%= messages.error[i] %></p>
-          <% } %>
-      <% } %>
-  </div>
-    <div class="grid grid-cols-7">
-      <div class="col-start-3 col-span-3">
-        <p class="py-1 mb-6 text-3xl">Welcome to Online Voting Platform</p>
-        <p class="py-1 text-xl">
-          New here? <a class="text-blue-600" href="/signup">Sign-up</a>
-        </p>
-        <p class="py-1 text-xl">
-          Have an account?
-          <a class="text-blue-600" href="/login">Sign-in</a>
-        </p>
-      </div>
+        <% if (messages && messages.error && messages.error.length > 0) { %>
+            <% for(var i=0; i<messages.error.length; i++) { %>
+                <p class="bg-blue-100 my-3 list-none rounded-md px-4 py-2"><%= messages.error[i] %></p>
+            <% } %>
+        <% } %>
+    </div>
+    <br/><br/>
+    <div class="flex flex-col items-center text-left overflow-hidden bg-white-50 sm:py-12 ">
+      <div class="mt-1 bg-white opacity-50 hover:opacity-100 shadow-md rounded-lg text-left"></div>
+        <form class="mt-1 bg-white opacity-50 hover:opacity-100 shadow-md rounded-lg text-left px-8 py-6 bg-blue-50">
+          <p class="py-1 text-3xl">
+            Welcome To The Platform
+          </p>
+          <br/>
+          <p class="py-1 text-xl">
+            First Time? <a class="text-blue-600" href="/signup">Sign Up</a>
+          </p>
+          <br/>
+          <p class="py-1 text-xl">
+            Already been Here?
+            <a class="text-blue-600" href="/login">Sign In</a>
+          </p>
+        </form>
+    </div>
     </div>
   </body>
 </html>
