@@ -8,7 +8,7 @@
     <title><%= title %></title>
 </head>
 <body class="bg-gray-50">
-    <div class=" flex text-gray-700 opacity-50 hover:opacity-100 antialiased flex-col overflow-hidden bg-gray-50 py-6 sm:py-12">
+    <div class=" flex text-gray-700 opacity-50 hover:opacity-100 flex-col overflow-hidden bg-white-50 sm:py-12">
         <div class=" py-3 sm:w-96 mx-auto text-center">
             <span class="text-xl font-bold">Login To Your Account</span>
             <div>
@@ -22,11 +22,11 @@
                 <div class="h-2 bg-blue-400 rounded-t-md"></div>
                 <form action="/session" method="post" class="px-8 py-6">
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                    <label for="email" class="block mt-5 font-semibold">Email</label>
+                    <label for="email" class="block mt-2 font-semibold">Email</label>
                     <input id="email" name="email" type="email" placeholder="Email" class="border w-full h-5 px-3 py-5 mt-5 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md" required>
                     <label for="password" class="block mt-5 font-semibold">Password</label>
                     <input id="password" name="password" type="password" placeholder="Password" class="border w-full h-5 px-3 py-5 mt-5 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md" required>
-                    <button type="submit" class="mt-5 w-full bg-blue-500 text-white py-2 px-6 rounded-md hover:bg-blue-600 ">Login</button>
+                    <button type="submit" class="mt-8 w-full bg-blue-500 text-white py-2 px-6 rounded-md hover:bg-blue-600 ">Login</button>
                 </form>
             </div>
             <div class="mt-5">
