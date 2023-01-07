@@ -7,9 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <title><%= title %></title>
 </head>
-<body class="bg-white-50">
-    <div class=" flex text-gray-700 antialiased flex-col overflow-hidden bg-gray-50 ">
-        <div class="py-3 sm:w-96 mx-auto text-center">
+<body class="bg-[url('/images/bgind.jpg')] bg-cover">
+    <div class=" font-serif flex text-gray-700 antialiased flex-col overflow-hidden ">
+        <div class="mt-12 py-3 sm:w-96 mx-auto text-center">
             <span class="text-2xl font-bold ">Create New Account</span>
             <div>
                 <% if (messages && messages.error && messages.error.length > 0) { %>
@@ -34,7 +34,7 @@
                 </form>
             </div>
             <div class="mt-4">
-                <a href="/login" class="text-sm hover:text-blue-400">Already have an account? Sign in</a>
+                <a href="/login" class="text-md font-bold hover:text-red-400">Already have an account? Sign in</a>
             </div>
         </div>
     </div>
