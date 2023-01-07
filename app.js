@@ -112,7 +112,7 @@ passport.deserializeUser(async function (id, done){
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 
-//main page
+//main page of website
 app.get("/", async function (request, response) {
   if (request.user) {
     console.log(request.user);
@@ -134,7 +134,7 @@ app.get("/", async function (request, response) {
   }
 });
 
-//signup page
+//signup page of user
 app.get("/signup", async function (request, response) {
   response.render("signup", {
     title: "Create Admin Account",
@@ -160,13 +160,13 @@ app.post("/admin", async function (request, response) {
     request.flash("error", "Your password length should be atleast 8 characters!");
     return response.redirect("/signup");
   }
-  const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
+  const HashPwd = await bcrypt.hash(request.body.password, saltRounds);
   try {
     const user = await adminModel.createAdmin({
       firstName: request.body.firstName,
       lastName: request.body.lastName,
       email: request.body.email,
-      password: hashedPwd,
+      password: HashPwd,
     });
     request.login(user, (err) => {
       if (err) {
@@ -190,6 +190,28 @@ app.get("/login", async function (request, response) {
   response.render("login", {
     title: "Login to your account",
     csrfToken: request.csrfToken(),
+  });
+});
+
+//user login
+app.post(
+  "/session",
+  passport.authenticate("Admin", {
+    failureRedirect: "/login",
+    failureFlash: true,
+  }),
+  async function (request, response) {
+    response.redirect("/elections");
+  }
+);
+
+//signout function
+app.get("/signout", async function (request, response, next) {
+  request.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    response.redirect("/");
   });
 });
 
@@ -222,28 +244,6 @@ app.get(
     }
   }
 );
-
-//user login
-app.post(
-  "/session",
-  passport.authenticate("Admin", {
-    failureRedirect: "/login",
-    failureFlash: true,
-  }),
-  async function (request, response) {
-    response.redirect("/elections");
-  }
-);
-
-//signout function
-app.get("/signout", async function (request, response, next) {
-  request.logout((err) => {
-    if (err) {
-      return next(err);
-    }
-    response.redirect("/");
-  });
-});
 
 
 //voter login page
@@ -301,7 +301,7 @@ app.post(
         request.flash("error", "Password length should be atleast 8");
         return response.redirect("/user_password_reset");
       }
-      const hashedNewPwd = await bcrypt.hash(
+      const HashNewPwd = await bcrypt.hash(
         request.body.new_password,
         saltRounds
       );
@@ -313,7 +313,7 @@ app.post(
         try {
           adminModel.findOne({ where: { email: request.user.email } }).then(
             (user) => {
-              user.resetPass(hashedNewPwd);
+              user.resetPass(HashNewPwd);
             }
           );
           request.flash("success", "Password changed successfully");
@@ -395,17 +395,17 @@ app.get(
     if (request.user.role === "admin") {
       try {
         const election = await electionModel.getElection(request.params.id);
-        const numberOfQuestions = await questionsModel.getNumberOfQuestions(
+        const NumberOfQuestions = await questionsModel.getNumberOfQuestions(
           request.params.id
         );
-        const numberOfVoters = await voterModel.getNumberOfVoters(request.params.id);
+        const NumberOfVoters = await voterModel.getNumberOfVoters(request.params.id);
         return response.render("election_details_page", {
           id: request.params.id,
           title: election.ElectionName,
           url: election.url,
           Launch: election.Launch,
-          nq: numberOfQuestions,
-          nv: numberOfVoters,
+          nq: NumberOfQuestions,
+          nv: NumberOfVoters,
         });
       } catch (error) {
         console.log(error);
@@ -576,17 +576,17 @@ app.put(
   }
 );
 
-//deleting question
+//deleting question function
 app.delete(
   "/elections/:electionID/questions/:questionID",
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
     if (request.user.role === "admin") {
       try {
-        const nq = await questionsModel.getNumberOfQuestions(
+        const NumQues = await questionsModel.getNumberOfQuestions(
           request.params.electionID
         );
-        if (nq > 1) {
+        if (NumQues > 1) {
           const res = await questionsModel.deleteQuestion(request.params.questionID);
           return response.json({ success: res === 1 });
         } else {
@@ -602,7 +602,7 @@ app.delete(
   }
 );
 
-//questions page
+//questions managing page
 app.get(
   "/elections/:id/questions/:questionID",
   connectEnsureLogin.ensureLoggedIn(),
@@ -682,8 +682,8 @@ app.delete(
   async function (request, response) {
     if (request.user.role === "admin") {
       try {
-        const res = await optionModel.deleteOption(request.params.optionID);
-        return response.json({ success: res === 1 });
+        const result = await optionModel.deleteOption(request.params.optionID);
+        return response.json({ success: result === 1 });
       } catch (error) {
         console.log(error);
         return response.status(422).json(error);
@@ -737,11 +737,11 @@ app.put(
         });
       }
       try {
-        const updatedOption = await optionModel.updateOption({
+        const UpdatedOption = await optionModel.updateOption({
           id: request.params.optionID,
           option: request.body.option,
         });
-        return response.json(updatedOption);
+        return response.json(UpdatedOption);
       } catch (error) {
         console.log(error);
         return response.status(422).json(error);
@@ -824,11 +824,11 @@ app.post(
           `/elections/${request.params.electionID}/voters/create`
         );
       }
-      const hashedPwd = await bcrypt.hash(request.body.Password, saltRounds);
+      const HashPwd = await bcrypt.hash(request.body.Password, saltRounds);
       try {
         await voterModel.createVoter({
           VoterID: request.body.VoterID,
-          Password: hashedPwd,
+          Password: HashPwd,
           electionID: request.params.electionID,
         });
         return response.redirect(
@@ -853,8 +853,8 @@ app.delete(
   async function (request, response) {
     if (request.user.role === "admin") {
       try {
-        const res = await voterModel.deleteVoter(request.params.VoterID);
-        return response.json({ success: res === 1 });
+        const result = await voterModel.deleteVoter(request.params.VoterID);
+        return response.json({ success: result === 1 });
       } catch (error) {
         console.log(error);
         return response.status(422).json(error);
@@ -883,7 +883,7 @@ app.get(
   }
 );
 
-//reseting user password
+//reseting voter password func
 app.post(
   "/elections/:electionID/voters/:VoterID/edit",
   connectEnsureLogin.ensureLoggedIn(),
@@ -897,14 +897,14 @@ app.post(
         request.flash("error", "Password length should be atleast 8");
         return response.redirect("/user_password_reset");
       }
-      const hashedNewPwd = await bcrypt.hash(
+      const HashNewPwd = await bcrypt.hash(
         request.body.new_password,
         saltRounds
       );
       try {
         voterModel.findOne({ where: { id: request.params.VoterID } }).then(
           (user) => {
-            user.resetPass(hashedNewPwd);
+            user.resetPass(HashNewPwd);
           }
         );
         request.flash("success", "Password changed successfully");
@@ -934,10 +934,10 @@ app.get(
         );
         let options = [];
         for (let question in questions) {
-          const question_options = await optionModel.getOptions(
+          const QuestionOptions = await optionModel.getOptions(
             questions[question].id
           );
-          if (question_options.length < 2) {
+          if (QuestionOptions.length < 2) {
             request.flash(
               "error",
               "There should be atleast two options in each question"
@@ -950,7 +950,7 @@ app.get(
               `/elections/${request.params.electionID}/questions/${questions[question].id}`
             );
           }
-          options.push(question_options);
+          options.push(QuestionOptions);
         }
 
         if (questions.length < 1) {
@@ -987,10 +987,10 @@ app.put(
   async function (request, response) {
     if (request.user.role === "admin") {
       try {
-        const launchedElection = await electionModel.launchElection(
+        const LaunchElection = await electionModel.launchElection(
           request.params.electionID
         );
-        return response.json(launchedElection);
+        return response.json(LaunchElection);
       } catch (error) {
         console.log(error);
         return response.status(422).json(error);
