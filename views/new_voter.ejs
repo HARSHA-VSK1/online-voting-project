@@ -5,35 +5,37 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body{
+            background: url('images/bgind.jpg');
+        }
+    </style>
     <title><%= title %></title>
 </head>
-<body class="bg-gray-50">
+<body class="h-14 bg-gradient-to-r from-red-100 to-blue-100">
     <nav class="p-6 bg-blue-100">
         <div class="container flex flex-wrap items-center justify-between mx-auto">
-          <a href="/" class="flex items-center">
-            <span class="self-center text-3xl font-semibold whitespace-nowrap text-blue-700">Online Voting Platform</span>
-          </a>
+          <span class="flex items-center self-center text-3xl font-semibold whitespace-nowrap text-blue-700">Online Voting Platform</span>
           <div class="w-auto">
             <ul class="flex">
               <li>
-                <a href="/user_password_reset" class="block px-4 font-semibold text-blue-700 rounded">Reset password</a>
+                <a href="/user_password_reset" class="block px-4 font-semibold text-blue-700 rounded hover:bg-red-100">Reset password</a>
               </li>
               <li>
-                <a href="/signout" class="block px-4 font-semibold text-blue-700 rounded ">Sign out</a>
+                <a href="/signout" class="block px-4 font-semibold text-blue-700 rounded hover:bg-red-100">Sign out</a>
               </li>
             </ul>
           </div>
         </div>
     </nav>
-    <div class="flex gap-1 mx-10 mt-6 bg-gray-50">
-        <span>></span>
+    <div class="font-serif flex gap-1 text-xl mx-10 mt-6">
         <a href="/elections" class="text-blue-800 hover:text-blue-600">All Elections</a>
         <span>></span>
         <a href="/elections/<%= electionID %>/" class="text-blue-800 hover:text-blue-600">Election</a>
         <span>></span>
         <a href="/elections/<%= electionID %>/voters" class="text-blue-800 hover:text-blue-600">Voters</a>
     </div>
-    <div class=" flex  text-gray-800 antialiased flex-col  overflow-hidden bg-gray-50 py-6 sm:py-12">
+    <div class="font-serif flex  text-gray-800 antialiased flex-col  overflow-hidden py-6 sm:py-12">
         <div class=" py-3 sm:w-96 mx-auto text-center">
             <span class="text-2xl font-light "><%= title %></span>
             <div>
@@ -44,14 +46,13 @@
                 <% } %>
             </div>
             <div class="mt-4 bg-white shadow-md rounded-lg text-left">
-                <div class="h-2 bg-blue-400 rounded-t-md"></div>
                 <form action="/elections/<%= electionID %>/voters/create" method="post" class="px-8 py-6">
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                     <label for="VoterID" class="block mt-3 font-semibold">Voter ID</label>
                     <input id="VoterID" name="VoterID" type="voterid" placeholder="Voter ID" class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md" required>
                     <label for="Password" class="block mt-3 font-semibold">Password</label>
                     <input id="Password" name="Password" type="password" placeholder="Password" class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md" required>
-                    <button type="submit" class="mt-6 w-full bg-blue-500 text-white py-2 px-6 rounded-md hover:bg-blue-600 ">Add voter</button>
+                    <button type="submit" class="mt-6 w-full bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-green-600 ">Add voter</button>
                 </form>
             </div>
         </div>

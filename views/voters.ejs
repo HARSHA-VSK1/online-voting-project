@@ -24,26 +24,23 @@
     </script>
     <title><%= title %></title>
 </head>
-<body class="bg-gray-50">
+<body class="bg-[url('/images/bgelec.jpg')] bg-cover">
     <nav class="p-6 bg-blue-100">
         <div class="container flex flex-wrap items-center justify-between mx-auto">
-          <a href="/" class="flex items-center">
-            <span class="self-center text-3xl font-semibold whitespace-nowrap text-blue-700">Online Voting Platform</span>
-          </a>
+          <span class="flex items-center self-center text-3xl font-semibold whitespace-nowrap text-blue-700">Online Voting Platform</span>
           <div class="w-auto">
             <ul class="flex">
               <li>
-                <a href="/user_password_reset" class="block px-4 font-semibold text-blue-700 rounded">Reset password</a>
+                <a href="/user_password_reset" class="block px-4 font-semibold text-blue-700 rounded hover:bg-red-100">Reset password</a>
               </li>
               <li>
-                <a href="/signout" class="block px-4 font-semibold text-blue-700 rounded ">Sign out</a>
+                <a href="/signout" class="block px-4 font-semibold text-blue-700 rounded hover:bg-red-100">Sign out</a>
               </li>
             </ul>
           </div>
         </div>
     </nav>
-    <div class="flex gap-1 mx-10 mt-6 bg-gray-50">
-        <span>></span>
+    <div class="font-serif text-xl flex gap-1 mx-10 mt-6 ">
         <a href="/elections" class="text-blue-800 hover:text-blue-600">All Elections</a>
         <span>></span>
         <a href="/elections/<%= id %>/" class="text-blue-800 hover:text-blue-600">Election</a>
@@ -51,18 +48,16 @@
     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
     <div class="my-6 mx-10">
         <div class="flex gap-2 py-4 justify-between">
-            <h5 class="text-2xl"><%= title %> - Voters</h5>
-            <div class="bg-blue-800 rounded w-fit px-2 py-1 hover:bg-blue-600">
-                <a href="/elections/<%= id %>/voters/create" class="text-white">+ Add a new voter</a>
-            </div>
+            <h5 class="font-serif text-2xl"><%= title %> : Voters</h5>
+            
         </div>
         <div class="flex-auto">
             <div class="mx-4">  
-                <p class="text-blue-600"><%= (voters.length==0)?"You haven't added any voters yet!":"" %></p>
+                <p class="font-serif text-blue-600"><%= (voters.length==0)?"You haven't added any voters yet!":"" %></p>
                 <ol class="list-decimal">
                     <% for (let i=0; i<voters.length; i++) { %>
                         <li>
-                            <div class="flex justify-between items-center w-full my-2 px-2 py-1 rounded hover:bg-blue-50">
+                            <div class="font-serif flex justify-between items-center w-full my-2 px-2 py-1 rounded hover:bg-blue-50">
                                 <p class="my-2 text-lg text-blue-600 "><%= voters[i].VoterID %></p>
                                 <div class="flex gap-2 text-blue-800">
                                     <div class="rounded w-fit px-2 py-1 flex gap-2 cursor-pointer hover:text-blue-600">
@@ -83,6 +78,9 @@
                     <% } %>
                 </ol>
             </div>
+        </div>
+        <div class="mt-12 font-serif bg-blue-600 rounded w-fit px-2 py-1 hover:bg-green-600">
+            <a href="/elections/<%= id %>/voters/create" class="text-white">+ Add a new voter</a>
         </div>
     </div>
 </body>

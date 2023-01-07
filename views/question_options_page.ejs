@@ -25,26 +25,23 @@
     <link rel="stylesheet" href="./css/style.css">
     <title><%= title %></title>
 </head>
-<body class="bg-gray-50">
+<body class="bg-[url('/images/bgelec.jpg')] bg-cover">
     <nav class="p-6 bg-blue-100">
         <div class="container flex flex-wrap items-center justify-between mx-auto">
-          <a href="/" class="flex items-center">
-            <span class="self-center text-3xl font-semibold whitespace-nowrap text-blue-700">Online Voting Platform</span>
-          </a>
+          <span class="flex items-center self-center text-3xl font-semibold whitespace-nowrap text-blue-700">Online Voting Platform</span>
           <div class="w-auto">
             <ul class="flex">
               <li>
-                <a href="/user_password_reset" class="block px-4 font-semibold text-blue-700 rounded">Reset password</a>
+                <a href="/user_password_reset" class="block px-4 font-semibold text-blue-700 rounded hover:bg-red-50">Reset password</a>
               </li>
               <li>
-                <a href="/signout" class="block px-4 font-semibold text-blue-700 rounded ">Sign out</a>
+                <a href="/signout" class="block px-4 font-semibold text-blue-700 rounded hover:bg-red-50">Sign out</a>
               </li>
             </ul>
           </div>
         </div>
     </nav>
-    <div class="flex gap-1 mx-10 mt-6 bg-gray-50">
-        <span>></span>
+    <div class="text-xl flex gap-1 mx-10 mt-6 ">
         <a href="/elections" class="text-blue-800 hover:text-blue-600">All Elections</a>
         <span>></span>
         <a href="/elections/<%= id %>/" class="text-blue-800 hover:text-blue-600">Election</a>
@@ -60,15 +57,12 @@
                     <% } %>
                 <% } %>
                 </div>
-            <div class="px-2 py-1">
-                <h3 class="text-2xl my-2"><%= title %></h3>
-                <p class="text-blue-800 text-md my-2"><%= description %></p>
-            </div>
-            <div class="ml-12">
+            
+            <div class="font-serif ml-12 mt-12">
                 <ol class="list-decimal">
                     <% for(let i=0; i<options.length; i++) { %>
                         <li class="option-item">
-                            <div class="flex justify-between items-center w-full my-2 px-2 py-1 rounded-lg bg-blue-50">
+                            <div class="flex justify-between items-center w-full my-2 px-2 py-1 rounded-lg hover:bg-blue-100">
                                 <p class="ml-2 text-lg "><%= options[i].option %></p>
                                 <div class="flex gap-2 text-blue-800">
                                 <div class="rounded w-fit px-2 py-1 flex gap-2 cursor-pointer hover:text-blue-600">
@@ -88,16 +82,15 @@
                         </li>
                     <% } %>
                 </ol>
-            </div>
+            </div><br/>
             <form action="/elections/<%= id %>/questions/<%= questionID %>" method="post">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                <div class="flex gap-2 py-4">
-                    <div class="flex-auto">
+                
+                <div class="flex-auto">
                         <input type="text" name="option" placeholder="Enter an option" class="border border-gray-300 text-gray-900 w-full rounded p-2 text-sm" required />
-                    </div>
-                    <div class="flex-none">
-                        <button type="submit" class="bg-blue-600 text-white px-5 py-1.5 rounded mr-2 mb-2">Add answer option</button>
-                    </div>
+                </div><br/><br/>
+                <div class="nt-12 ml-96">
+                    <button type="submit" class="bg-blue-600 hover:bg-green-600 text-white px-5 py-1.5 rounded mr-2 mb-2">Add answer option</button>
                 </div>
             </form>
             <p class="text-blue-800"><%= (options.length==0)?"You haven't added any options yet!":"" %></p>
