@@ -23,13 +23,13 @@ app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
 
 app.use(
   session({
-    secret: "my-super-secret-key-2837428907583420",
+    secret: "my-super-secret-key-2478225678434267",
     cookie: {
       maxAge: 24 * 60 * 60 * 1000,
     },
   })
 );
-app.use((request, response, next) => {
+app.use(async function (request, response, next){
   response.locals.messages = request.flash();
   next();
 });
@@ -43,7 +43,7 @@ passport.use(
       usernameField: "email",
       passwordField: "password",
     },
-    (username, password, done) => {
+    async function (username, password, done){
       console.log("Hello there");
       adminModel.findOne({ where: { email: username } })
         .then(async (user) => {
@@ -69,14 +69,14 @@ passport.use(
       usernameField: "VoterID",
       passwordField: "Password",
     },
-    (username, password, done) => {
+    async function (username, password, done) {
       voterModel.findOne({ where: { VoterID: username } })
         .then(async (user) => {
           const result = await bcrypt.compare(password, user.Password);
           if (result) {
             return done(null, user);
           } else {
-            return done(null, false, { message: "Invalid password!" });
+            return done(null, false, { message: "Invalid Password!" });
           }
         })
         .catch(() => {
@@ -86,10 +86,10 @@ passport.use(
   )
 );
 
-passport.serializeUser((user, done) => {
+passport.serializeUser(async function (user, done) {
   done(null, { id: user.id, role: user.role });
 });
-passport.deserializeUser((id, done) => {
+passport.deserializeUser(async function (id, done){
   if (id.role === "admin") {
     adminModel.findByPk(id.id)
       .then((user) => {
@@ -112,7 +112,7 @@ passport.deserializeUser((id, done) => {
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 
-//landing page
+//main page
 app.get("/", async function (request, response) {
   if (request.user) {
     console.log(request.user);
@@ -134,7 +134,66 @@ app.get("/", async function (request, response) {
   }
 });
 
-//elections home page
+//signup page
+app.get("/signup", async function (request, response) {
+  response.render("signup", {
+    title: "Create Admin Account",
+    csrfToken: request.csrfToken(),
+  });
+});
+
+//creating user account
+app.post("/admin", async function (request, response) {
+  if (!request.body.firstName) {
+    request.flash("error", "Please enter your first name!");
+    return response.redirect("/signup");
+  }
+  if (!request.body.email) {
+    request.flash("error", "Please enter your email ID!");
+    return response.redirect("/signup");
+  }
+  if (!request.body.password) {
+    request.flash("error", "Please enter your password!");
+    return response.redirect("/signup");
+  }
+  if (request.body.password.length < 8) {
+    request.flash("error", "Your password length should be atleast 8 characters!");
+    return response.redirect("/signup");
+  }
+  const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
+  try {
+    const user = await adminModel.createAdmin({
+      firstName: request.body.firstName,
+      lastName: request.body.lastName,
+      email: request.body.email,
+      password: hashedPwd,
+    });
+    request.login(user, (err) => {
+      if (err) {
+        console.log(err);
+        response.redirect("/");
+      } else {
+        response.redirect("/elections");
+      }
+    });
+  } catch (error) {
+    request.flash("error", "Email ID is already linked to a user");
+    return response.redirect("/signup");
+  }
+});
+
+//user login page
+app.get("/login", async function (request, response) {
+  if (request.user) {
+    return response.redirect("/elections");
+  }
+  response.render("login", {
+    title: "Login to your account",
+    csrfToken: request.csrfToken(),
+  });
+});
+
+//user elections page
 app.get(
   "/elections",
   connectEnsureLogin.ensureLoggedIn(),
@@ -164,75 +223,7 @@ app.get(
   }
 );
 
-//signup page
-app.get("/signup", async function (request, response) {
-  response.render("signup", {
-    title: "Create admin account",
-    csrfToken: request.csrfToken(),
-  });
-});
-
-//create user account
-app.post("/admin", async function (request, response) {
-  if (!request.body.firstName) {
-    request.flash("error", "Please enter your first name!");
-    return response.redirect("/signup");
-  }
-  if (!request.body.email) {
-    request.flash("error", "Please enter email ID!");
-    return response.redirect("/signup");
-  }
-  if (!request.body.password) {
-    request.flash("error", "Please enter your password!");
-    return response.redirect("/signup");
-  }
-  if (request.body.password.length < 8) {
-    request.flash("error", "Password length should be atleast 8!");
-    return response.redirect("/signup");
-  }
-  const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
-  try {
-    const user = await adminModel.createAdmin({
-      firstName: request.body.firstName,
-      lastName: request.body.lastName,
-      email: request.body.email,
-      password: hashedPwd,
-    });
-    request.login(user, (err) => {
-      if (err) {
-        console.log(err);
-        response.redirect("/");
-      } else {
-        response.redirect("/elections");
-      }
-    });
-  } catch (error) {
-    request.flash("error", "Email ID is already in use");
-    return response.redirect("/signup");
-  }
-});
-
-//login page
-app.get("/login", async function (request, response) {
-  if (request.user) {
-    return response.redirect("/elections");
-  }
-  response.render("login", {
-    title: "Login to your account",
-    csrfToken: request.csrfToken(),
-  });
-});
-
-//voter login page
-app.get("/e/:url/voter", async function (request, response) {
-  response.render("voter_login", {
-    title: "Login in as Voter",
-    url: request.params.url,
-    csrfToken: request.csrfToken(),
-  });
-});
-
-//login user
+//user login
 app.post(
   "/session",
   passport.authenticate("Admin", {
@@ -244,18 +235,7 @@ app.post(
   }
 );
 
-//login voter
-app.post(
-  "/e/:url/voter",
-  passport.authenticate("Voter", {
-    failureFlash: true,
-  }),
-  async function (request, response) {
-    return response.redirect(`/e/${request.params.url}`);
-  }
-);
-
-//signout
+//signout function
 app.get("/signout", async function (request, response, next) {
   request.logout((err) => {
     if (err) {
@@ -265,7 +245,29 @@ app.get("/signout", async function (request, response, next) {
   });
 });
 
-//password reset page
+
+//voter login page
+app.get("/elections/:url/voter", async function (request, response) {
+  response.render("voter_login", {
+    title: "Login in as Voter",
+    url: request.params.url,
+    csrfToken: request.csrfToken(),
+  });
+});
+
+//voter login
+app.post(
+  "/elections/:url/voter",
+  passport.authenticate("Voter", {
+    failureFlash: true,
+  }),
+  async function (request, response) {
+    return response.redirect(`/elections/${request.params.url}`);
+  }
+);
+
+
+//reseting password page
 app.get(
   "/password-reset",
   connectEnsureLogin.ensureLoggedIn(),
@@ -281,7 +283,7 @@ app.get(
   }
 );
 
-//reset user password
+//reseting password function
 app.post(
   "/password-reset",
   connectEnsureLogin.ensureLoggedIn(),
@@ -330,7 +332,7 @@ app.post(
   }
 );
 
-//new election page
+//new election starting page
 app.get(
   "/elections/create",
   connectEnsureLogin.ensureLoggedIn(),
@@ -346,7 +348,7 @@ app.get(
   }
 );
 
-//creating new election
+//creating new election function
 app.post(
   "/elections",
   connectEnsureLogin.ensureLoggedIn(),
@@ -385,7 +387,7 @@ app.post(
   }
 );
 
-//election page
+//election stats page
 app.get(
   "/elections/:id",
   connectEnsureLogin.ensureLoggedIn(),
@@ -415,7 +417,7 @@ app.get(
   }
 );
 
-//manage questions page
+//managing questions page
 app.get(
   "/elections/:id/questions",
   connectEnsureLogin.ensureLoggedIn(),
@@ -438,7 +440,7 @@ app.get(
             });
           }
         } else {
-          request.flash("error", "Cannot edit while election is running");
+          request.flash("error", "Cannot edit while election is running!");
           return response.redirect(`/elections/${request.params.id}/`);
         }
       } catch (error) {
@@ -451,7 +453,7 @@ app.get(
   }
 );
 
-//add question page
+//adding question page
 app.get(
   "/elections/:id/questions/create",
   connectEnsureLogin.ensureLoggedIn(),
@@ -478,7 +480,7 @@ app.get(
   }
 );
 
-//add question
+//adding question in the election
 app.post(
   "/elections/:id/questions/create",
   connectEnsureLogin.ensureLoggedIn(),
@@ -515,7 +517,7 @@ app.post(
   }
 );
 
-//edit question page
+//editing a question page
 app.get(
   "/elections/:electionID/questions/:questionID/edit",
   connectEnsureLogin.ensureLoggedIn(),
@@ -545,7 +547,7 @@ app.get(
   }
 );
 
-//edit question
+//editing a question function
 app.put(
   "/questions/:questionID/edit",
   connectEnsureLogin.ensureLoggedIn(),
@@ -558,12 +560,12 @@ app.put(
         });
       }
       try {
-        const updatedQuestion = await questionsModel.updateQuestion({
+        const UpdatedQuestion = await questionsModel.updateQuestion({
           QuestionName: request.body.QuestionName,
-          description: request.body.Description,
+          Description: request.body.Description,
           id: request.params.questionID,
         });
-        return response.json(updatedQuestion);
+        return response.json(UpdatedQuestion);
       } catch (error) {
         console.log(error);
         return response.status(422).json(error);
@@ -574,7 +576,7 @@ app.put(
   }
 );
 
-//delete question
+//deleting question
 app.delete(
   "/elections/:electionID/questions/:questionID",
   connectEnsureLogin.ensureLoggedIn(),
@@ -600,7 +602,7 @@ app.delete(
   }
 );
 
-//question page
+//questions page
 app.get(
   "/elections/:id/questions/:questionID",
   connectEnsureLogin.ensureLoggedIn(),
@@ -638,7 +640,7 @@ app.get(
   }
 );
 
-//adding options
+//adding options page function
 app.post(
   "/elections/:id/questions/:questionID",
   connectEnsureLogin.ensureLoggedIn(),
@@ -673,7 +675,7 @@ app.post(
   }
 );
 
-//delete options
+//deleting options page function
 app.delete(
   "/options/:optionID",
   connectEnsureLogin.ensureLoggedIn(),
@@ -692,7 +694,7 @@ app.delete(
   }
 );
 
-//edit option page
+//editing options page
 app.get(
   "/elections/:electionID/questions/:questionID/options/:optionID/edit",
   connectEnsureLogin.ensureLoggedIn(),
@@ -722,7 +724,7 @@ app.get(
   }
 );
 
-//update options
+//updating options page function
 app.put(
   "/options/:optionID/edit",
   connectEnsureLogin.ensureLoggedIn(),
@@ -750,7 +752,7 @@ app.put(
   }
 );
 
-//voter page
+//voters list page
 app.get(
   "/elections/:electionID/voters",
   connectEnsureLogin.ensureLoggedIn(),
@@ -781,7 +783,7 @@ app.get(
   }
 );
 
-//add voter page
+//adding voters page
 app.get(
   "/elections/:electionID/voters/create",
   connectEnsureLogin.ensureLoggedIn(),
@@ -798,7 +800,7 @@ app.get(
   }
 );
 
-//add voter
+//add voter to election
 app.post(
   "/elections/:electionID/voters/create",
   connectEnsureLogin.ensureLoggedIn(),
@@ -817,7 +819,7 @@ app.post(
         );
       }
       if (request.body.Password.length < 8) {
-        request.flash("error", "Password length should be atleast 8");
+        request.flash("error", "Password length should be atleast 8 characters");
         return response.redirect(
           `/elections/${request.params.electionID}/voters/create`
         );
@@ -844,7 +846,7 @@ app.post(
   }
 );
 
-//delete voter
+//deleting a voter
 app.delete(
   "/elections/:electionID/voters/:VoterID",
   connectEnsureLogin.ensureLoggedIn(),
@@ -863,7 +865,7 @@ app.delete(
   }
 );
 
-//voter password reset page
+//voter password reseting
 app.get(
   "/elections/:electionID/voters/:VoterID/edit",
   connectEnsureLogin.ensureLoggedIn(),
@@ -881,7 +883,7 @@ app.get(
   }
 );
 
-//reset user password
+//reseting user password
 app.post(
   "/elections/:electionID/voters/:VoterID/edit",
   connectEnsureLogin.ensureLoggedIn(),
@@ -919,7 +921,7 @@ app.post(
   }
 );
 
-//election preview
+//previewing election
 app.get(
   "/elections/:electionID/preview",
   connectEnsureLogin.ensureLoggedIn(),
@@ -978,7 +980,7 @@ app.get(
   }
 );
 
-//launch an election
+//launching an election
 app.put(
   "/elections/:electionID/launch",
   connectEnsureLogin.ensureLoggedIn(),
@@ -999,6 +1001,7 @@ app.put(
   }
 );
 
+//Voting constraints
 app.get("/e/:url/", async function (request, response) {
   if (!request.user) {
     request.flash("error", "Please login before trying to Vote");
@@ -1034,7 +1037,7 @@ app.get("/e/:url/", async function (request, response) {
   }
 });
 
-app.use(function (request, response) {
+app.use(async function (request, response){
   response.status(404).render("404");
 });
 

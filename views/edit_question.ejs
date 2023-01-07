@@ -12,8 +12,8 @@
         function updateQuestion() {
             let electionID = <%= electionID %>;
             let questionID = <%= questionID %>;
-            let question = document.getElementById("QuestionName").value;
-            let description = document.getElementById("Description").value;
+            let QuestionName = document.getElementById("QuestionName").value;
+            let Description = document.getElementById("Description").value;
             fetch(`/questions/${questionID}/edit`, {
                 method: "put",
                 headers: {"Content-Type":"application/json"},

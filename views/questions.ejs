@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="<%= csrfToken %>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
+    <title><%= title %></title>
     <script>
         var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
         function deleteQuestion({electionID, questionID}) {
@@ -22,7 +23,6 @@
             }).catch((err)=> console.error(err))
         }
     </script>
-    <title><%= title %></title>
 </head>
 <body class="bg-gray-50">
     <%- include('header.ejs') %>
