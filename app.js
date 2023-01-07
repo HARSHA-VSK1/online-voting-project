@@ -399,7 +399,7 @@ app.get(
           request.params.id
         );
         const numberOfVoters = await voterModel.getNumberOfVoters(request.params.id);
-        return response.render("election_page", {
+        return response.render("election_details_page", {
           id: request.params.id,
           title: election.ElectionName,
           url: election.url,
