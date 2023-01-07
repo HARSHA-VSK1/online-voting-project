@@ -247,7 +247,7 @@ app.get("/signout", async function (request, response, next) {
 
 
 //voter login page
-app.get("/elections/:url/voter", async function (request, response) {
+app.get("/election/:url/voter", async function (request, response) {
   response.render("voter_login", {
     title: "Login in as Voter",
     url: request.params.url,
@@ -257,23 +257,23 @@ app.get("/elections/:url/voter", async function (request, response) {
 
 //voter login
 app.post(
-  "/elections/:url/voter",
+  "/election/:url/voter",
   passport.authenticate("Voter", {
     failureFlash: true,
   }),
   async function (request, response) {
-    return response.redirect(`/elections/${request.params.url}`);
+    return response.redirect(`/election/${request.params.url}`);
   }
 );
 
 
 //reseting password page
 app.get(
-  "/password-reset",
+  "/user_password_reset",
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
     if (request.user.role === "admin") {
-      response.render("password-reset", {
+      response.render("user_password_reset", {
         title: "Reset your password",
         csrfToken: request.csrfToken(),
       });
@@ -285,21 +285,21 @@ app.get(
 
 //reseting password function
 app.post(
-  "/password-reset",
+  "/user_password_reset",
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
     if (request.user.role === "admin") {
       if (!request.body.old_password) {
         request.flash("error", "Please enter your old password");
-        return response.redirect("/password-reset");
+        return response.redirect("/user_password_reset");
       }
       if (!request.body.new_password) {
         request.flash("error", "Please enter a new password");
-        return response.redirect("/password-reset");
+        return response.redirect("/user_password_reset");
       }
       if (request.body.new_password.length < 8) {
         request.flash("error", "Password length should be atleast 8");
-        return response.redirect("/password-reset");
+        return response.redirect("/user_password_reset");
       }
       const hashedNewPwd = await bcrypt.hash(
         request.body.new_password,
@@ -324,7 +324,7 @@ app.post(
         }
       } else {
         request.flash("error", "Old password does not match");
-        return response.redirect("/password-reset");
+        return response.redirect("/user_password_reset");
       }
     } else if (request.user.role === "voter") {
       return response.redirect("/");
@@ -338,7 +338,7 @@ app.get(
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
     if (request.user.role === "admin") {
-      return response.render("new_election", {
+      return response.render("newelection", {
         title: "Create an election",
         csrfToken: request.csrfToken(),
       });
@@ -891,11 +891,11 @@ app.post(
     if (request.user.role === "admin") {
       if (!request.body.new_password) {
         request.flash("error", "Please enter a new password");
-        return response.redirect("/password-reset");
+        return response.redirect("/user_password_reset");
       }
       if (request.body.new_password.length < 8) {
         request.flash("error", "Password length should be atleast 8");
-        return response.redirect("/password-reset");
+        return response.redirect("/user_password_reset");
       }
       const hashedNewPwd = await bcrypt.hash(
         request.body.new_password,
@@ -1002,7 +1002,7 @@ app.put(
 );
 
 //Voting constraints
-app.get("/e/:url/", async function (request, response) {
+app.get("/election/:url/", async function (request, response) {
   if (!request.user) {
     request.flash("error", "Please login before trying to Vote");
     return response.redirect(`/e/${request.params.url}/voter`);
