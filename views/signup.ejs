@@ -7,17 +7,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <title><%= title %></title>
 </head>
-<body class="bg-gray-50">
-    <nav>
-        <div class="container flex flex-wrap items-center justify-between mx-auto">
-          <a href="/" class="py-2 px-4 flex items-center">
-            <span class="self-center text-xl font-semibold whitespace-nowrap text-blue-800">E-Vote</span>
-          </a>
-        </div>
-    </nav>
-    <div class=" flex  text-gray-800 antialiased flex-col overflow-hidden bg-gray-50 ">
-        <div class=" sm:w-96 mx-auto text-center">
-            <span class="text-2xl font-light ">Create a new admin account</span>
+<body class="bg-white-50">
+    <div class=" flex text-gray-700 antialiased flex-col overflow-hidden bg-gray-50 ">
+        <div class="py-3 sm:w-96 mx-auto text-center">
+            <span class="text-2xl font-bold ">Create New Account</span>
             <div>
                 <% if (messages && messages.error && messages.error.length > 0) { %>
                     <% for(var i=0; i<messages.error.length; i++) { %>
@@ -25,8 +18,8 @@
                     <% } %>
                 <% } %>
             </div>
-            <div class="mt-4 bg-white shadow-md rounded-lg text-left">
-                <div class="h-2 bg-blue-400 rounded-t-md"></div>
+            <div class="mt-4 bg-white opacity-50 hover:opacity-100 shadow-md rounded-lg text-left">
+               
                 <form action="/admin" method="post" class="px-8 py-6">
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                     <label for="firstName" class="block mt-3 font-semibold">First name</label>
@@ -37,7 +30,7 @@
                     <input id="email" name="email" type="email" placeholder="Email" class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md" required>
                     <label for="password" class="block mt-3 font-semibold">Password</label>
                     <input id="password" name="password" type="password" placeholder="Password" class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md" required>
-                    <button type="submit" class="mt-6 bg-blue-500 w-full text-white py-2 px-6 rounded-md hover:bg-blue-600 ">Create account</button>
+                    <button type="submit" class="mt-8 bg-blue-500 w-full text-white py-2 px-6 rounded-md hover:bg-blue-600 ">Create account</button>
                 </form>
             </div>
             <div class="mt-4">

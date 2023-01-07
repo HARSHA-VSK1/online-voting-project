@@ -25,8 +25,8 @@
         <h3 class="text-4xl my-4 font-medium"><%= title %></h3>
         <% if (Launch) { %>
             <div class="py-4">
-                <h4 class="text-2xl my-2 font-medium">Your election is launched!</h4>
-                <h2 class="my-2 text-lg text-black flex gap-1">Voters can vote from this url:</h2>
+                <h5 class="text-3xl my-2 font-medium">Congratulations!!Your election is launched successfully!</h5>
+                <h2 class="my-2 text-lg text-black flex gap-1">Voters can access election from URL given below:</h2>
                 <a href="/e/<%= url %>/" class="py-1 hover:text-blue-800 text-blue-600">https://localhost:3000/e/<%= url %></a>
             </div>
         <% } %>
@@ -41,16 +41,16 @@
             <a href="/elections/<%= id %>/voters" class="py-1 hover:text-blue-800 text-blue-600">Manage voters</a>
         </div>
         <% if (!Launch) { %>
-            <div class="bg-blue-800 rounded w-fit px-4 py-1 hover:bg-blue-600">
+            <div class="bg-blue-800 rounded w-fit px-4 py-1 hover:bg-green-600">
                 <a href="/elections/<%= id %>/preview" class="text-white">Preview & Launch election</a>
             </div>
         <% } %>
         <% if (Launch) { %>
             <div class="flex gap-2">
-                <div class="bg-blue-800 rounded w-fit px-4 py-1 hover:bg-blue-600 ease-linear transition-all duration-150">
-                    <a href="" class="text-white">Preview results</a>
+                <div class="bg-blue-800 rounded w-fit px-4 py-1 hover:bg-red-600 ease-linear transition-all duration-150">
+                    <a href="" class="text-white">Preview result</a>
                 </div>
-                <div class="bg-blue-800 rounded w-fit px-4 py-1 hover:bg-blue-600 ease-linear transition-all duration-150">
+                <div class="bg-blue-800 rounded w-fit px-4 py-1 hover:bg-red-600 ease-linear transition-all duration-150">
                     <a href="" class="text-white">End election</a>
                 </div>
             </div>

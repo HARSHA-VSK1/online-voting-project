@@ -18,18 +18,18 @@
         </div>
         <div class="flex gap-2 py-4 justify-between">
             <h5 class="text-2xl">Your Elections List</h5>
-            <div class="bg-blue-800 rounded w-fit px-2 py-1 hover:bg-blue-600">
+            <div class="bg-blue-600 rounded w-fit px-2 py-1">
                 <a href="/elections/create" class="text-white">+ Create New Election</a>
             </div>
         </div>
         <div class="flex-auto">
             <div class="mx-4">  
-                <p class="text-blue-600"><%= (elections.length==0)?"You haven't created any elections yet!":"" %></p>
+                <p class="text-blue-600 text-xl"><%= (elections.length==0)?"You haven't created any elections yet!":"" %></p>
                 <ol class="list-decimal">
                     <% for (let i=0; i<elections.length; i++) { %>
                         <li>
-                            <div class="flex items-center w-fit my-2 px-2 py-1 rounded hover:bg-blue-50">
-                                <a href="/elections/<%= elections[i].id %>" class="m-2 text-sm text-blue-600 "><%= elections[i].ElectionName %></a>
+                            <div class="flex items-center w-fit my-2 px-2 py-1 rounded bg-red-50">
+                                <a href="/elections/<%= elections[i].id %>" class="m-2 text-xl text-blue-600"><%= elections[i].ElectionName %></a>
                             </div>
                         </li>
                     <% } %>
