@@ -6,6 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <title><%= title %></title>
+    <style>
+        body{
+          background: url("images/bgelec.jpg");
+          background-size: cover;
+          background-repeat: no-repeat;    
+        }
+      </style>
 </head>
 <body class="bg-gray-50">
     <nav class="p-6 bg-blue-100">
@@ -25,32 +32,33 @@
           </div>
         </div>
     </nav>
-    <div class="my-6 mx-10">
-        <h3 class="text-4xl my-4 font-semibold">Hola, <%= userName %>!</h3>
+    <div class="mt-12 my-6 mx-10">
+        <h3 class="font-serif text-4xl my-4 font-semibold">Hola, <%= userName %>!</h3>
         <div>
             <% if (messages.success) { %>
                 <p class="bg-blue-100 m-3 list-none rounded-md px-4 py-2"><%= messages.success %></p>
             <% } %>
         </div>
         <div class="flex gap-2 py-4 justify-between">
-            <h5 class="text-2xl">Your Elections List</h5>
-            <div class="bg-blue-600 rounded w-fit px-2 py-1">
-                <a href="/elections/create" class="text-white">+ Create New Election</a>
-            </div>
+            <h5 class="font-serif text-2xl">Your Elections List</h5>
+            
         </div>
         <div class="flex-auto">
             <div class="mx-4">  
-                <p class="text-blue-600 text-xl"><%= (elections.length==0)?"You haven't created any elections yet!":"" %></p>
+                <p class="text-red-600 text-xl"><%= (elections.length==0)?"You haven't created any elections yet!":"" %></p>
                 <ol class="list-decimal">
                     <% for (let i=0; i<elections.length; i++) { %>
-                        <li>
-                            <div class="flex items-center w-fit my-2 px-2 py-1 rounded bg-red-50">
-                                <a href="/elections/<%= elections[i].id %>" class="m-2 text-xl text-blue-600"><%= elections[i].ElectionName %></a>
+                        <li class="hover:bg-red-50">
+                            <div class="flex items-center w-fit my-2 px-2 py-1 rounded">
+                                <a href="/elections/<%= elections[i].id %>" class="font-serif m-2 text-xl text-blue-600"><%= elections[i].ElectionName %></a>
                             </div>
                         </li>
                     <% } %>
                 </ol>
             </div>
+        </div>
+        <div class="mt-8 bg-blue-600 rounded w-fit px-2 py-2">
+            <a href="/elections/create" class="text-white">+ Create New Election</a>
         </div>
     </div>
 </body>

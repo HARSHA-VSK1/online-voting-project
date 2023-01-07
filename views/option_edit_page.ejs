@@ -32,7 +32,7 @@
 <body class="bg-gray-50">
     <div class="relative flex min-h-screen text-gray-800 antialiased flex-col justify-center overflow-hidden bg-gray-50 py-6 sm:py-12">
         <div class="relative py-3 sm:w-96 mx-auto text-center">
-            <span class="text-2xl font-light ">Edit question</span>
+            <span class="text-2xl font-bold">Edit Option</span>
             <div>
                 <% if (messages && messages.error && messages.error.length > 0) { %>
                     <% for(var i=0; i<messages.error.length; i++) { %>
@@ -41,10 +41,9 @@
                 <% } %>
             </div>
             <div class="mt-4 bg-white shadow-md rounded-lg text-left">
-                <div class="h-2 bg-blue-400 rounded-t-md"></div>
                 <div class="px-8 py-6">
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                    <label for="option" class="block mt-3 font-semibold">Option</label>
+                    <label for="option" class="block mt-3 font-semibold">New Option</label>
                     <input value="<%= option %>" id="option" name="option" type="text" placeholder="Option" class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md" required>
                     <button class="mt-6 w-full bg-blue-500 text-white py-2 px-6 rounded-md hover:bg-blue-600 " onclick="updateOption()">Update option</button>
                 </div>

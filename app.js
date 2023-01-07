@@ -617,7 +617,7 @@ app.get(
           return response.redirect(`/elections/${request.params.id}/`);
         }
         if (request.accepts("html")) {
-          response.render("question_page", {
+          response.render("question_options_page", {
             title: question.question,
             description: question.Description,
             id: request.params.id,
@@ -707,7 +707,7 @@ app.get(
           return response.redirect(`/elections/${request.params.id}/`);
         }
         const option = await optionModel.getOption(request.params.optionID);
-        return response.render("edit_option", {
+        return response.render("option_edit_page", {
           option: option.option,
           csrfToken: request.csrfToken(),
           electionID: request.params.electionID,
@@ -871,7 +871,7 @@ app.get(
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
     if (request.user.role === "admin") {
-      response.render("voter_password", {
+      response.render("voter_password_reset", {
         title: "Reset voter password",
         electionID: request.params.electionID,
         VoterID: request.params.VoterID,
@@ -1024,7 +1024,7 @@ app.get("/election/:url/", async function (request, response) {
           csrfToken: request.csrfToken(),
         });
       } else {
-        return response.render("404");
+        return response.render("errorpg");
       }
     } else if (request.user.role === "admin") {
       request.flash("error", "You cannot vote as Admin");
@@ -1038,7 +1038,7 @@ app.get("/election/:url/", async function (request, response) {
 });
 
 app.use(async function (request, response){
-  response.status(404).render("404");
+  response.status(404).render("errorpg");
 });
 
 module.exports = app;
