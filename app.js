@@ -36,6 +36,8 @@ app.use(async function (request, response, next){
 app.use(passport.initialize());
 app.use(passport.session());
 
+
+//To create a paassport session for user/admin
 passport.use(
   "Admin",
   new LocalStratergy(
@@ -62,6 +64,8 @@ passport.use(
   )
 );
 
+
+//To create a paassport session for voter
 passport.use(
   "Voter",
   new LocalStratergy(
@@ -86,9 +90,12 @@ passport.use(
   )
 );
 
+
 passport.serializeUser(async function (user, done) {
   done(null, { id: user.id, role: user.role });
 });
+
+
 passport.deserializeUser(async function (id, done){
   if (id.role === "admin") {
     adminModel.findByPk(id.id)
@@ -134,6 +141,7 @@ app.get("/", async function (request, response) {
   }
 });
 
+
 //signup page of user
 app.get("/signup", async function (request, response) {
   response.render("signup", {
@@ -141,6 +149,7 @@ app.get("/signup", async function (request, response) {
     csrfToken: request.csrfToken(),
   });
 });
+
 
 //creating user account
 app.post("/admin", async function (request, response) {
@@ -267,7 +276,7 @@ app.post(
 );
 
 
-//reseting password page
+//reseting user password page
 app.get(
   "/user_password_reset",
   connectEnsureLogin.ensureLoggedIn(),
@@ -283,7 +292,7 @@ app.get(
   }
 );
 
-//reseting password function
+//reseting user password function
 app.post(
   "/user_password_reset",
   connectEnsureLogin.ensureLoggedIn(),
@@ -387,6 +396,7 @@ app.post(
   }
 );
 
+
 //election stats page
 app.get(
   "/elections/:id",
@@ -416,6 +426,7 @@ app.get(
     }
   }
 );
+
 
 //managing questions page
 app.get(
@@ -452,6 +463,7 @@ app.get(
     }
   }
 );
+
 
 //adding question page
 app.get(
@@ -580,7 +592,8 @@ app.put(
 app.delete(
   "/elections/:electionID/questions/:questionID",
   connectEnsureLogin.ensureLoggedIn(),
-  async function (request, response) {
+  async function (request, response)
+  {
     if (request.user.role === "admin") {
       try {
         const NumQues = await questionsModel.getNumberOfQuestions(
@@ -606,7 +619,8 @@ app.delete(
 app.get(
   "/elections/:id/questions/:questionID",
   connectEnsureLogin.ensureLoggedIn(),
-  async function (request, response) {
+  async function (request, response) 
+  {
     if (request.user.role === "admin") {
       try {
         const question = await questionsModel.getQuestion(request.params.questionID);
@@ -644,7 +658,8 @@ app.get(
 app.post(
   "/elections/:id/questions/:questionID",
   connectEnsureLogin.ensureLoggedIn(),
-  async function (request, response) {
+  async function (request, response) 
+  {
     if (request.user.role === "admin") {
       if (!request.body.option) {
         request.flash("error", "Please enter option");
@@ -921,6 +936,44 @@ app.post(
   }
 );
 
+
+//Voting constraints
+app.get("/election/:url/", async function (request, response) {
+  if (!request.user) {
+    request.flash("error", "Please login before trying to Vote");
+    return response.redirect(`/e/${request.params.url}/voter`);
+  }
+  try {
+    const election = await electionModel.getElectionURL(request.params.url);
+    if (request.user.role === "voter") {
+      if (election.Launch) {
+        const questions = await questionsModel.getQuestions(election.id);
+        let options = [];
+        for (let question in questions) {
+          options.push(await optionModel.getOptions(questions[question].id));
+        }
+        return response.render("vote", {
+          title: election.ElectionName,
+          electionID: election.id,
+          questions,
+          options,
+          csrfToken: request.csrfToken(),
+        });
+      } else {
+        return response.render("errorpg");
+      }
+    } else if (request.user.role === "admin") {
+      request.flash("error", "You cannot vote as Admin");
+      request.flash("error", "Please signout as Admin before trying to vote");
+      return response.redirect(`/elections/${election.id}`);
+    }
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
+});
+
+
 //previewing election
 app.get(
   "/elections/:electionID/preview",
@@ -1001,41 +1054,7 @@ app.put(
   }
 );
 
-//Voting constraints
-app.get("/election/:url/", async function (request, response) {
-  if (!request.user) {
-    request.flash("error", "Please login before trying to Vote");
-    return response.redirect(`/e/${request.params.url}/voter`);
-  }
-  try {
-    const election = await electionModel.getElectionURL(request.params.url);
-    if (request.user.role === "voter") {
-      if (election.Launch) {
-        const questions = await questionsModel.getQuestions(election.id);
-        let options = [];
-        for (let question in questions) {
-          options.push(await optionModel.getOptions(questions[question].id));
-        }
-        return response.render("vote", {
-          title: election.ElectionName,
-          electionID: election.id,
-          questions,
-          options,
-          csrfToken: request.csrfToken(),
-        });
-      } else {
-        return response.render("errorpg");
-      }
-    } else if (request.user.role === "admin") {
-      request.flash("error", "You cannot vote as Admin");
-      request.flash("error", "Please signout as Admin before trying to vote");
-      return response.redirect(`/elections/${election.id}`);
-    }
-  } catch (error) {
-    console.log(error);
-    return response.status(422).json(error);
-  }
-});
+
 
 app.use(async function (request, response){
   response.status(404).render("errorpg");
