@@ -816,6 +816,7 @@ app.get(
   }
 );
 
+
 //add voter to election
 app.post(
   "/elections/:electionID/voters/create",
@@ -881,6 +882,7 @@ app.delete(
   }
 );
 
+
 //voter password reseting
 app.get(
   "/elections/:electionID/voters/:VoterID/edit",
@@ -898,6 +900,7 @@ app.get(
     }
   }
 );
+
 
 //reseting voter password func
 app.post(
@@ -1029,6 +1032,7 @@ app.get(
     }
   }
 );
+
 
 //launching an election
 app.put(
