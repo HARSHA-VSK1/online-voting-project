@@ -119,7 +119,7 @@ passport.deserializeUser(async function (id, done){
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 
-//main page of website
+//main page of voting website
 app.get("/", async function (request, response) {
   if (request.user) {
     console.log(request.user);
