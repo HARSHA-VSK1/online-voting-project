@@ -259,7 +259,7 @@ app.get(
 app.get("/election/:url/voter", async function (request, response) 
 {
   response.render("voter_login", {
-    title: "Login in as Voter",
+    title: "Login as Voter",
     url: request.params.url,
     csrfToken: request.csrfToken(),
   });
@@ -958,13 +958,7 @@ app.get("/election/:url/", async function (request, response) {
         for (let question in questions) {
           options.push(await optionModel.getOptions(questions[question].id));
         }
-        return response.render("vote", {
-          title: election.ElectionName,
-          electionID: election.id,
-          questions,
-          options,
-          csrfToken: request.csrfToken(),
-        });
+        return response.render("/");
       } else {
         return response.render("errorpg");
       }
