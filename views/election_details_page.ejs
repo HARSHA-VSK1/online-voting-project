@@ -38,7 +38,15 @@
     <div class="my-6 mx-10">
         <h3 class="font-serif text-4xl text-white my-4 font-medium"><%= title %></h3>
         <% if (Launch) { %>
-            <h5 class="font-serif text-3xl text-white my-2 font-medium">Congratulations!!Your election is launched successfully!</h5>
+            <div class="hover:bg-green-600 opacity-90">
+                <ul class="flex">
+                    <li> <h5 class="font-serif text-3xl px-2 text-white my-2 font-medium">Congratulations</h5></li>
+                    <li><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="w-8 h-8 mt-2 text-white">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z"><path>
+                      </svg></li>
+                    <li><h5 class="font-serif text-3xl text-white px-2 my-2 font-medium">Your election is launched successfully!</h5></li>
+                </ul>
+            </div>
         <% } %>
         <div class="mt-4">
             <h2 class="text-white font-serif my-2 text-lg flex gap-1">Your election has <span class="font-serif text-2xl text-blue-600"> <%= nq %> </span> questions in the ballot</h2>
@@ -53,8 +61,8 @@
         <% if (Launch) { %>
             <div class="mt-4 py-4">
                 
-                <h2 class="text-white font-serif my-2 text-lg flex gap-1">Voters can access election from URL given below:</h2>
-                <a href="/election/<%= url %>/" class="py-1 hover:text-blue-600 text-xl text-green-600">https://harshas-voting-platform.onrender.com/election/<%= url %></a>
+                <h2 class="text-white font-serif my-2 text-2xl flex gap-1">Voters can access election from URL given below:</h2>
+                <a href="/election/<%= url %>/" class="py-1 hover:text-blue-600 hover:bg-white hover:opacity-90 text-xl text-green-600">https://harshas-voting-platform.onrender.com/election/<%= url %></a>
             </div>
         <% } %>
         
