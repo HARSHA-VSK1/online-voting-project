@@ -907,11 +907,11 @@ app.post(
     if (request.user.role === "admin") {
       if (!request.body.new_password) {
         request.flash("error", "Please enter a new password");
-        return response.redirect("/user_password_reset");
+        return response.redirect("/elections/:electionID/voters/:VoterID/edit");
       }
       if (request.body.new_password.length < 8) {
         request.flash("error", "Password length should be atleast 8");
-        return response.redirect("/user_password_reset");
+        return response.redirect("/elections/:electionID/voters/:VoterID/edit");
       }
       const HashNewPwd = await bcrypt.hash(
         request.body.new_password,
@@ -958,13 +958,7 @@ app.get("/election/:url/", async function (request, response) {
         for (let question in questions) {
           options.push(await optionModel.getAllOptions(questions[question].id));
         }
-        return response.render("vote",{
-          title: election.ElectionName,
-          electionID: election.id,
-          questions,
-          options,
-          csrfToken: request.csrfToken(),
-        });
+        return response.redirect("/");
       } else {
         return response.render("errorpg");
       }
