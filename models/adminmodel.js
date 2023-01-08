@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       return this.update({ password });
     }
 
-    static createAdmin({ firstName, lastName, email, password }) {
+    static creatingAdmin({ firstName, lastName, email, password }) {
       return this.create({
         firstName,
         lastName,

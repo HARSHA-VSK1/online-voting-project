@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       return this.update({ password });
     }
 
-    static async createVoter({ VoterID, Password, electionID }) {
+    static async createaVoter({ VoterID, Password, electionID }) {
       return await this.create({
         VoterID,
         Password,
@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static async getNumberOfVoters(electionID) {
+    static async getNumOfVoters(electionID) {
       return await this.count({
         where: {
           electionID,
@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static async getVoters(electionID) {
+    static async getAllVoters(electionID) {
       return await this.findAll({
         where: {
           electionID,
@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static async deleteVoter(id) {
+    static async deleteaVoter(id) {
       return await this.destroy({
         where: {
           id,

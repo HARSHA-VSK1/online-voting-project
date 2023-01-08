@@ -171,7 +171,7 @@ app.post("/admin", async function (request, response) {
   }
   const HashPwd = await bcrypt.hash(request.body.password, saltRounds);
   try {
-    const user = await adminModel.createAdmin({
+    const user = await adminModel.creatingAdmin({
       firstName: request.body.firstName,
       lastName: request.body.lastName,
       email: request.body.email,
@@ -232,7 +232,7 @@ app.get(
     if (request.user.role === "admin") {
       let loggedinuser = request.user.firstName + " " + request.user.lastName;
       try {
-        const elections = await electionModel.getElections(request.user.id);
+        const elections = await electionModel.getAllElections(request.user.id);
         if (request.accepts("html")) {
           response.render("elections", {
             title: "Online Voting Platform",
@@ -406,10 +406,10 @@ app.get(
     if (request.user.role === "admin") {
       try {
         const election = await electionModel.getElection(request.params.id);
-        const NumberOfQuestions = await questionsModel.getNumberOfQuestions(
+        const NumberOfQuestions = await questionsModel.getNumOfQues(
           request.params.id
         );
-        const NumberOfVoters = await voterModel.getNumberOfVoters(request.params.id);
+        const NumberOfVoters = await voterModel.getNumOfVoters(request.params.id);
         return response.render("election_details_page", {
           id: request.params.id,
           title: election.ElectionName,
@@ -437,7 +437,7 @@ app.get(
     if (request.user.role === "admin") {
       try {
         const election = await electionModel.getElection(request.params.id);
-        const questions = await questionsModel.getQuestions(request.params.id);
+        const questions = await questionsModel.getAllQuestions(request.params.id);
         if (!election.Launch) {
           if (request.accepts("html")) {
             return response.render("questions", {
@@ -512,7 +512,7 @@ app.post(
           request.flash("error", "Cannot edit while election is running");
           return response.redirect(`/elections/${request.params.id}/`);
         }
-        const question = await questionsModel.addQuestion({
+        const question = await questionsModel.addaaQuestion({
           QuestionName: request.body.QuestionName,
           Description: request.body.Description,
           electionID: request.params.id,
@@ -542,7 +542,7 @@ app.get(
           request.flash("error", "Cannot edit while election is running");
           return response.redirect(`/elections/${request.params.id}/`);
         }
-        const question = await questionsModel.getQuestion(request.params.questionID);
+        const question = await questionsModel.getaQuestion(request.params.questionID);
         return response.render("edit_question", {
           electionID: request.params.electionID,
           questionID: request.params.questionID,
@@ -573,7 +573,7 @@ app.put(
         });
       }
       try {
-        const UpdatedQuestion = await questionsModel.updateQuestion({
+        const UpdatedQuestion = await questionsModel.updateaQuestion({
           QuestionName: request.body.QuestionName,
           Description: request.body.Description,
           id: request.params.questionID,
@@ -597,11 +597,11 @@ app.delete(
   {
     if (request.user.role === "admin") {
       try {
-        const NumQues = await questionsModel.getNumberOfQuestions(
+        const NumQues = await questionsModel.getNumOfQues(
           request.params.electionID
         );
         if (NumQues > 1) {
-          const res = await questionsModel.deleteQuestion(request.params.questionID);
+          const res = await questionsModel.deleteaQuestion(request.params.questionID);
           return response.json({ success: res === 1 });
         } else {
           return response.json({ success: false });
@@ -624,8 +624,8 @@ app.get(
   {
     if (request.user.role === "admin") {
       try {
-        const question = await questionsModel.getQuestion(request.params.questionID);
-        const options = await optionModel.getOptions(request.params.questionID);
+        const question = await questionsModel.getaQuestion(request.params.questionID);
+        const options = await optionModel.getAllOptions(request.params.questionID);
         const election = await electionModel.getElection(request.params.id);
         if (election.Launch) {
           request.flash("error", "Cannot edit while election is running");
@@ -674,7 +674,7 @@ app.post(
           request.flash("error", "Cannot edit while election is running");
           return response.redirect(`/elections/${request.params.id}/`);
         }
-        await optionModel.addOption({
+        await optionModel.addanOption({
           option: request.body.option,
           questionID: request.params.questionID,
         });
@@ -698,7 +698,7 @@ app.delete(
   async function (request, response) {
     if (request.user.role === "admin") {
       try {
-        const result = await optionModel.deleteOption(request.params.optionID);
+        const result = await optionModel.deleteanOption(request.params.optionID);
         return response.json({ success: result === 1 });
       } catch (error) {
         console.log(error);
@@ -722,7 +722,7 @@ app.get(
           request.flash("error", "Cannot edit while election is running");
           return response.redirect(`/elections/${request.params.id}/`);
         }
-        const option = await optionModel.getOption(request.params.optionID);
+        const option = await optionModel.getanOption(request.params.optionID);
         return response.render("option_edit_page", {
           option: option.option,
           csrfToken: request.csrfToken(),
@@ -753,7 +753,7 @@ app.put(
         });
       }
       try {
-        const UpdatedOption = await optionModel.updateOption({
+        const UpdatedOption = await optionModel.updateanOption({
           id: request.params.optionID,
           option: request.body.option,
         });
@@ -775,7 +775,7 @@ app.get(
   async function (request, response) {
     if (request.user.role === "admin") {
       try {
-        const voters = await voterModel.getVoters(request.params.electionID);
+        const voters = await voterModel.getAllVoters(request.params.electionID);
         const election = await electionModel.getElection(request.params.electionID);
         if (request.accepts("html")) {
           return response.render("voters", {
@@ -842,7 +842,7 @@ app.post(
       }
       const HashPwd = await bcrypt.hash(request.body.Password, saltRounds);
       try {
-        await voterModel.createVoter({
+        await voterModel.createaVoter({
           VoterID: request.body.VoterID,
           Password: HashPwd,
           electionID: request.params.electionID,
@@ -869,7 +869,7 @@ app.delete(
   async function (request, response) {
     if (request.user.role === "admin") {
       try {
-        const result = await voterModel.deleteVoter(request.params.VoterID);
+        const result = await voterModel.deleteaVoter(request.params.VoterID);
         return response.json({ success: result === 1 });
       } catch (error) {
         console.log(error);
@@ -942,7 +942,7 @@ app.post(
 app.get("/election/:url/", async function (request, response) {
   if (!request.user) {
     request.flash("error", "Please login before trying to Vote");
-    return response.redirect(`/e/${request.params.url}/voter`);
+    return response.redirect(`/election/${request.params.url}/voter`);
   }
   try {
     const election = await electionModel.getElectionURL(request.params.url);
@@ -953,12 +953,18 @@ app.get("/election/:url/", async function (request, response) {
     }
     else if (request.user.role === "voter") {
       if (election.Launch) {
-        const questions = await questionsModel.getQuestions(election.id);
+        const questions = await questionsModel.getAllQuestions(election.id);
         let options = [];
         for (let question in questions) {
-          options.push(await optionModel.getOptions(questions[question].id));
+          options.push(await optionModel.getAllOptions(questions[question].id));
         }
-        return response.render("/");
+        return response.render("vote",{
+          title: election.ElectionName,
+          electionID: election.id,
+          questions,
+          options,
+          csrfToken: request.csrfToken(),
+        });
       } else {
         return response.render("errorpg");
       }
@@ -979,12 +985,12 @@ app.get(
     if (request.user.role === "admin") {
       try {
         const election = await electionModel.getElection(request.params.electionID);
-        const questions = await questionsModel.getQuestions(
+        const questions = await questionsModel.getAllQuestions(
           request.params.electionID
         );
         let options = [];
         for (let question in questions) {
-          const QuestionOptions = await optionModel.getOptions(
+          const QuestionOptions = await optionModel.getAllOptions(
             questions[question].id
           );
           if (QuestionOptions.length < 2) {
@@ -1037,7 +1043,7 @@ app.put(
   async function (request, response) {
     if (request.user.role === "admin") {
       try {
-        const LaunchElection = await electionModel.launchElection(
+        const LaunchElection = await electionModel.launchingElection(
           request.params.electionID
         );
         return response.json(LaunchElection);

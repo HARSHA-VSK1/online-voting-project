@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-     static async getNumberOfQuestions(electionID) {
+    static async getNumOfQues(electionID) {
       return await this.count({
         where: {
           electionID,
@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static updateQuestion({ QuestionName, Description, id }) {
+    static updateaQuestion({ QuestionName, Description, id }) {
       return this.update(
         {
           QuestionName,
@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       );
     }
 
-    static addQuestion({ QuestionName, Description, electionID }) {
+    static addaaQuestion({ QuestionName, Description, electionID }) {
       return this.create({
         QuestionName,
         Description,
@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static async getQuestion(id) {
+    static async getaQuestion(id) {
       return await this.findOne({
         where: {
           id,
@@ -48,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static deleteQuestion(id) {
+    static deleteaQuestion(id) {
       return this.destroy({
         where: {
           id,
@@ -56,7 +56,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static async getQuestions(electionID) {
+    static async getAllQuestions(electionID) {
       return await this.findAll({
         where: {
           electionID,

@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static launchElection(id) {
+    static launchingElection(id) {
       return this.update(
         {
           Launch: true,
@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
       );
     }
 
-    static getElections(adminID) {
+    static getAllElections(adminID) {
       return this.findAll({
         where: {
           adminID,
