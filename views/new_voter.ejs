@@ -36,8 +36,8 @@
         <a href="/elections/<%= electionID %>/voters" class="text-blue-800 hover:text-blue-600">Voters</a>
     </div>
     <div class="font-serif flex  text-gray-800 antialiased flex-col  overflow-hidden py-6 sm:py-12">
-        <div class=" py-3 sm:w-96 mx-auto text-center">
-            <span class="text-2xl font-light "><%= title %></span>
+        <div class=" py-3 sm:w-96 mx-auto text-center font-bold">
+            <span class="text-2xl "><%= title %></span>
             <div>
                 <% if (messages && messages.error && messages.error.length > 0) { %>
                     <% for(var i=0; i<messages.error.length; i++) { %>

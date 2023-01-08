@@ -51,12 +51,12 @@
         <div class="mt-4">
             <h2 class="text-white font-serif my-2 text-lg flex gap-1">Your election has <span class="font-serif text-2xl text-blue-600"> <%= nq %> </span> questions in the ballot</h2>
             <% if (!Launch) { %>
-                <a href="/elections/<%= id %>/questions" class="py-1 hover:text-blue-800 text-xl text-blue-600">Manage questions</a>
+                <a href="/elections/<%= id %>/questions" class="py-1 hover:text-blue-500 text-xl text-blue-700">Manage questions</a>
             <% } %>
         </div>
         <div class="mb-8 bt-4">
             <h2 class="text-white font-serif my-2 text-lg  flex gap-1">Your election has <span class="font-serif text-2xl text-blue-600"> <%= nv %> </span> registered voters.</h2>
-            <a href="/elections/<%= id %>/voters" class="font-serif py-1 hover:text-blue-800 text-xl text-blue-600">Manage voters</a>
+            <a href="/elections/<%= id %>/voters" class="font-serif py-1 text-blue-700 text-xl hover:text-blue-500">Manage voters</a>
         </div>
         <% if (Launch) { %>
             <div class="mt-4 py-4">
