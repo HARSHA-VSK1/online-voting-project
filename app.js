@@ -256,7 +256,8 @@ app.get(
 
 
 //voter login page
-app.get("/election/:url/voter", async function (request, response) {
+app.get("/election/:url/voter", async function (request, response) 
+{
   response.render("voter_login", {
     title: "Login in as Voter",
     url: request.params.url,
@@ -264,7 +265,7 @@ app.get("/election/:url/voter", async function (request, response) {
   });
 });
 
-//voter login
+//voter login authen
 app.post(
   "/election/:url/voter",
   passport.authenticate("Voter", {
@@ -945,7 +946,12 @@ app.get("/election/:url/", async function (request, response) {
   }
   try {
     const election = await electionModel.getElectionURL(request.params.url);
-    if (request.user.role === "voter") {
+    if (request.user.role === "admin") {
+      request.flash("error", "You cannot vote as Admin");
+      request.flash("error", "Please signout as Admin before trying to vote");
+      return response.redirect(`/elections/${election.id}`);
+    }
+    else if (request.user.role === "voter") {
       if (election.Launch) {
         const questions = await questionsModel.getQuestions(election.id);
         let options = [];
@@ -962,11 +968,8 @@ app.get("/election/:url/", async function (request, response) {
       } else {
         return response.render("errorpg");
       }
-    } else if (request.user.role === "admin") {
-      request.flash("error", "You cannot vote as Admin");
-      request.flash("error", "Please signout as Admin before trying to vote");
-      return response.redirect(`/elections/${election.id}`);
-    }
+    } 
+    
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);
@@ -974,7 +977,7 @@ app.get("/election/:url/", async function (request, response) {
 });
 
 
-//previewing election
+//previewing the election
 app.get(
   "/elections/:electionID/preview",
   connectEnsureLogin.ensureLoggedIn(),
@@ -1053,7 +1056,6 @@ app.put(
     }
   }
 );
-
 
 
 app.use(async function (request, response){
