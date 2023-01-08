@@ -11,7 +11,7 @@
   },
   "scripts": {
     "start": "nodemon index.js",
-    "start:prod": "node index.js",
+    "start:prod": "node index.js && npx sequelize-cli db:migrate",
     "pretest": "NODE_ENV=test npx sequelize-cli db:drop && NODE_ENV=test npx sequelize-cli db:create",
     "test": "NODE_ENV=test jest --detectOpenHandles",
     "prepare": "husky install"
